@@ -2,7 +2,7 @@
 
 from __future__ import print_function
 import sys
-from workflow import Workflow, web
+from workflow import Workflow, web, ICON_INFO
 import json
 
 
@@ -10,6 +10,14 @@ API_KEY = 'zt4v6a9fvnjeb5396ewbhdz9'
 
 def main(wf):
     
+    # Check for workflow update
+    if wf.update_available:
+        # Add a notification to top of Script Filter results
+        wf.add_item('New version available',
+                    'Action this item to install the update',
+                    autocomplete='workflow:update',
+                    icon=ICON_INFO)
+                    
     # Get query from Alfred
     if len(wf.args):
         qtype = wf.args[0]
@@ -64,5 +72,8 @@ def main(wf):
     wf.send_feedback()
     
 if __name__ == u"__main__":
-    wf = Workflow()
+    wf = Workflow(update_settings={
+        'github_slug': 'dalimatt/tomatometer',
+        'frequency': 1
+    })
     sys.exit(wf.run(main))
